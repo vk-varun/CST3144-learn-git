@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Pet Depot</title>
+    <!-- Production Link -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16"></script> -->
+    <!-- Prototyping Link -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- Font Awesome Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1 v-text="sitename"></h1>
+            <button v-on:click="showCheckout">
+                {{ cartItemCount }}
+                <!-- cart Icon -->
+                <span class="fas fa-cart-plus"></span>
+                Checkout
+            </button>
+        </header>
+        <main>
+            <div v-if="showProduct">
+                <figure>
+                    <img v-bind:src="product.image">
+                </figure>
+                <h2 v-text="product.title"></h2>
+                <p v-html="product.description"></p>
+                <p>Price: {{ product.price }}</p>
+                <p>Availability: {{ product.availableInventory - cartItemCount }}</p>
+                <!-- instead of v-on, @ symbol can be used -->
+                <!-- <input type="button" value="add" v-on:click="addItem">  -->
+                <button v-on:click="addItem" v-if="canAddToCart">Add to cart</button>
+                <button disabled="disabled" v-else>Out of Stock</button>
+            </div>
+
+            <div v-else>
+                <h2>Checkout</h2>
+            </div>
+        </main>
+    </div>
+    <script type="text/javascript">
+        let webstore = new Vue({
+            el: "#app", // DOM (Document Object Model) used to mount the application
+            data: {
+                sitename: "Vue.js Pet Depot",
+                product: {
+                    id: 1001,
+                    title: "Cat Food, 25lb bag",
+                    description: "A 25 pound bag of <em>irresistible</em>, organic goodness for your cat.",
+                    price: 200.00,
+                    image: "images/cat-food2.jpg",
+                    availableInventory: 5
+                },
+                cart: [], // an array to store items in shopping cart
+                showProduct: true
+            },
+            methods: {
+                addItem: function () {
+                    this.cart.push(this.product.id);
+                    // this.product.availableInventory -= 1;
+                },
+                showCheckout() {
+                    this.showProduct = this.showProduct ? false : true;
+                }
+            },
+            computed: {
+                cartItemCount: function () {
+                    // its value is calculated each time its called
+                    return this.cart.length || "";
+                },
+                canAddToCart: function () {
+                    return this.product.availableInventory > this.cartItemCount;
+                    // return this.product.availableInventory > 0;
+                }
+            }
+
+        });
+    </script>
+</body>
+
+</html>
